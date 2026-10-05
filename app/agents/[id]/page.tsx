@@ -133,14 +133,14 @@ export default async function AgentPage({ params }: AgentPageProps) {
   let xpHistoryData: any = null
 
   try {
-    const res = await fetch(absoluteUrl(`/api/agents/${id}`), { cache: 'no-store' })
+    const res = await fetch(absoluteUrl(`/api/agents/${id}?view=public`), { cache: 'no-store' })
     if (res.ok) metaData = await res.json()
   } catch (e) {
     console.warn(`Failed to fetch metadata for agent ${id}:`, e)
   }
 
   try {
-    const res = await fetch(absoluteUrl(`/api/agents/${id}/health`), { cache: 'no-store' })
+    const res = await fetch(absoluteUrl(`/api/agents/${id}/health?view=public`), { cache: 'no-store' })
     if (res.ok) healthData = await res.json()
   } catch (e) {
     console.warn(`Failed to fetch health for agent ${id}:`, e)
@@ -187,25 +187,21 @@ export default async function AgentPage({ params }: AgentPageProps) {
   let isHealthy = false
   let uptime = "0s"
   let runtimeStatus = "offline"
-  let currentTask = "No active task"
 
   if (healthData) {
     isHealthy = healthData.health?.status === 'healthy'
     uptime = healthData.health?.uptime || "0s"
     runtimeStatus = healthData.health?.runtimeStatus || healthData.health?.status || "offline"
-    currentTask = healthData.health?.currentTask || "No active task"
   } else {
     const health = getAgentHealth(id)
     if (health) {
       isHealthy = health.status === 'healthy'
       uptime = health.uptime || "0s"
       runtimeStatus = health.runtimeStatus || health.status || "offline"
-      currentTask = health.currentTask || "No active task"
     } else if (localAgent) {
       isHealthy = localAgent.status !== 'offline'
       uptime = `${getAgentCardStats(localAgent).uptime}%`
       runtimeStatus = localAgent.status || "active"
-      currentTask = localAgent.currentTask || "No active task"
     }
   }
 
@@ -297,10 +293,6 @@ export default async function AgentPage({ params }: AgentPageProps) {
                 </div>
               </div>
               <p className="font-mono text-sm text-slate-400 mt-1">ID: {agentIdStr}</p>
-              {/* Current Task */}
-              <div className="mt-1 font-mono text-sm text-slate-300">
-                <span className="text-slate-500">Current Task:</span> <span className="text-cyan-300 font-semibold">{currentTask}</span>
-              </div>
               <div className="flex items-center gap-2 font-mono text-xs text-cyan-400/80 mt-2 bg-cyan-950/30 px-3 py-1.5 rounded-full border border-cyan-900/50">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 {districtName}
