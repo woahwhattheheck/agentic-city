@@ -1,0 +1,66 @@
+name: Agent 83 visual evidence Ubuntu 22
+
+on:
+  push:
+    branches:
+      - sol56/agent83-public-profile-20261005
+
+permissions:
+  contents: write
+
+jobs:
+  capture-evidence:
+    if: github.actor == 'woahwhattheheck'
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out exact branch
+        uses: actions/checkout@v4
+        with:
+          ref: sol56/agent83-public-profile-20261005
+          fetch-depth: 0
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies and Chromium
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Start branch server
+        shell: bash
+        run: |
+          nohup npm run dev -- --hostname 127.0.0.1 > /tmp/agent83-next.log 2>&1 &
+          echo $! > /tmp/agent83-next.pid
+          for attempt in $(seq 1 90); do
+            if curl --fail --silent --show-error http://127.0.0.1:3000/agents/nexus-7 > /tmp/agent83-smoke.html; then
+              exit 0
+            fi
+            sleep 2
+          done
+          cat /tmp/agent83-next.log
+          exit 1
+
+      - name: Capture anonymous acceptance evidence
+        run: node scripts/agent83-evidence.mjs
+
+      - name: Commit evidence and remove temporary capture machinery
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/agent83-evidence.yml
+          git rm .github/workflows/agent83-evidence-ubuntu22.yml
+          git rm scripts/agent83-evidence.mjs
+          git add docs/evidence/agent-83
+          git diff --cached --check
+          git commit -m "docs(profiles): add anonymous profile evidence"
+          git push origin HEAD:sol56/agent83-public-profile-20261005
+
+      - name: Print server log on failure
+        if: failure()
+        run: cat /tmp/agent83-next.log || true
