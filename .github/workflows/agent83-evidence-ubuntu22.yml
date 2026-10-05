@@ -45,6 +45,22 @@ jobs:
           cat /tmp/agent83-next.log
           exit 1
 
+      - name: Select a static agent for the OG card
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/agent83-evidence.mjs')
+          text = path.read_text()
+          old = '/api/og/agent/evidence-agent'
+          new = '/api/og/agent/nexus-7'
+          count = text.count(old)
+          if count != 1:
+              raise SystemExit(f'expected one OG target, found {count}')
+          path.write_text(text.replace(old, new))
+          PY
+
       - name: Capture anonymous acceptance evidence
         run: node scripts/agent83-evidence.mjs
 
