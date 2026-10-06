@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="960" viewBox="0 0 1440 960" role="img" aria-labelledby="title desc">
+  <title id="title">Task offer lifecycle acceptance evidence</title>
+  <desc id="desc">Three panels show a full claim, deliver and accept cycle with escrow balances, a concurrent claim with one winner, and a dispute with a frozen reward.</desc>
+  <rect width="1440" height="960" fill="#0b1020"/>
+  <text x="72" y="82" fill="#f8fafc" font-family="ui-sans-serif, system-ui" font-size="42" font-weight="700">Task-offer lifecycle · #114</text>
+  <text x="72" y="124" fill="#94a3b8" font-family="ui-monospace, monospace" font-size="20">Deterministic acceptance scenario · reward 5.0000000 XLM</text>
+
+  <rect x="60" y="170" width="1320" height="230" rx="24" fill="#111a31" stroke="#334155" stroke-width="2"/>
+  <text x="96" y="218" fill="#38bdf8" font-family="ui-sans-serif, system-ui" font-size="26" font-weight="700">1 · claim → deliver → accept</text>
+  <text x="96" y="260" fill="#e2e8f0" font-family="ui-monospace, monospace" font-size="19">OPEN        poster=agent-poster   escrow.locked=5.0000000 XLM   worker.released=0</text>
+  <text x="96" y="300" fill="#e2e8f0" font-family="ui-monospace, monospace" font-size="19">CLAIMED     actor=agent-worker   winner=agent-worker</text>
+  <text x="96" y="340" fill="#e2e8f0" font-family="ui-monospace, monospace" font-size="19">DELIVERED   actor=agent-worker   result={ summary: "done" }</text>
+  <text x="96" y="380" fill="#86efac" font-family="ui-monospace, monospace" font-size="19">ACCEPTED    escrow.locked=0   worker.released=5.0000000 XLM   payout=x402_release_…</text>
+
+  <rect x="60" y="430" width="1320" height="200" rx="24" fill="#111a31" stroke="#334155" stroke-width="2"/>
+  <text x="96" y="478" fill="#fbbf24" font-family="ui-sans-serif, system-ui" font-size="26" font-weight="700">2 · concurrent claim: exactly one winner</text>
+  <text x="96" y="526" fill="#86efac" font-family="ui-monospace, monospace" font-size="20">agent-alpha  → fulfilled   status=claimed</text>
+  <text x="96" y="566" fill="#fca5a5" font-family="ui-monospace, monospace" font-size="20">agent-beta   → rejected    code=TASK_OFFER_CONFLICT   currentStatus=claimed</text>
+  <text x="96" y="606" fill="#e2e8f0" font-family="ui-monospace, monospace" font-size="20">fulfilled=1   rejected=1   winners=1</text>
+
+  <rect x="60" y="660" width="1320" height="220" rx="24" fill="#111a31" stroke="#334155" stroke-width="2"/>
+  <text x="96" y="708" fill="#c084fc" font-family="ui-sans-serif, system-ui" font-size="26" font-weight="700">3 · dispute freezes the reward</text>
+  <text x="96" y="756" fill="#e2e8f0" font-family="ui-monospace, monospace" font-size="20">DELIVERED   poster action=dispute</text>
+  <text x="96" y="796" fill="#f0abfc" font-family="ui-monospace, monospace" font-size="20">DISPUTED    rewardFrozen=true   escrow.status=frozen   dispute=escrow_dispute_…</text>
+  <text x="96" y="836" fill="#fca5a5" font-family="ui-monospace, monospace" font-size="20">release blocked   worker payout=0   poster refund=0   pending admin arbitration</text>
+
+  <text x="72" y="924" fill="#64748b" font-family="ui-sans-serif, system-ui" font-size="16">Fixture IDs are shortened for readability; the committed lifecycle test asserts the full values and transition history.</text>
+</svg>
